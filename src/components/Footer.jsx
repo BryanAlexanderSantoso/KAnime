@@ -10,7 +10,10 @@ function Footer() {
                         alt="KANIME"
                         className="h-12 object-contain mb-6"
                     />
-                    <p className="text-zinc-500 text-sm max-w-xs">The ultimate destination for premium anime discovery. Explore thousands of titles in HD quality for free.</p>
+                    <p className="text-zinc-500 text-sm max-w-xs mb-3">The ultimate destination for premium anime discovery. Explore thousands of titles in HD quality for free.</p>
+                    <p className="text-zinc-400 text-xs font-bold uppercase tracking-widest">
+                        Powered by <a href="https://kazeserenity.com" target="_blank" rel="noopener noreferrer" className="text-[#0084ff] hover:underline">Kaze Serenity</a>
+                    </p>
                 </div>
                 <div className="flex gap-10 text-sm font-medium text-zinc-400">
                     <div className="flex flex-col gap-3">
@@ -22,12 +25,12 @@ function Footer() {
                     <div className="flex flex-col gap-3">
                         <p className="text-white font-bold mb-1">Support</p>
                         <span className="hover:text-white cursor-pointer transition-colors">Help Center</span>
-                        <span className="hover:text-white cursor-pointer transition-colors">Discord</span>
+                        <a href="https://kazeserenity.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Kaze Serenity</a>
                         <span className="hover:text-white cursor-pointer transition-colors">Contact</span>
                     </div>
                 </div>
             </div>
-            <p className="text-center mt-20 text-zinc-600 text-xs">© 2026 KAnime Platform. Built with passion for the anime community.</p>
+            <p className="text-center mt-20 text-zinc-600 text-xs">© 2026 KAnime Platform. Part of the <a href="https://kazeserenity.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">Kaze Serenity Network</a>.</p>
         </footer>
     );
 }

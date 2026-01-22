@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import DetailModal from '../components/DetailModal';
 import AnimeCard from '../components/AnimeCard';
 import SectionRow from '../components/SectionRow';
-import { API_BASE } from '../api';
+import DiscordPopup from '../components/DiscordPopup';
+import { getTopAnime, searchAnime, getAnimeById, filterValidAnime } from '../api';
 
 function Home() {
+    const location = useLocation();
     const [heroAnime, setHeroAnime] = useState(null);
     const [navScrolled, setNavScrolled] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -35,13 +38,17 @@ function Home() {
         async function fetchInitial() {
             try {
                 // Fetch dynamic hero from top titles
-                const heroRes = await fetch(`${API_BASE}/top/anime?limit=5`);
-                const heroData = await heroRes.json();
+                const heroData = await getTopAnime({ limit: 5 });
                 const randomHero = heroData.data[Math.floor(Math.random() * heroData.data.length)];
                 setHeroAnime(randomHero);
 
-                // Fetch initial list
-                fetchListData(1, 'latest', true);
+                // Check for genre from navigation
+                if (location.state?.genreId) {
+                    handleGenreSearch(location.state.genreId, location.state.genreName);
+                } else {
+                    // Fetch initial list
+                    fetchListData(1, 'latest', true);
+                }
             } catch (e) { console.error(e); }
         }
         fetchInitial();
@@ -49,7 +56,18 @@ function Home() {
         const handleScroll = () => setNavScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [location.state]);
+
+    const handleGenreSearch = async (genreId, genreName) => {
+        setSearchQuery(genreName);
+        setIsSearching(true);
+        setShowingFavorites(false);
+        try {
+            const data = await searchAnime('', { genres: genreId.toString(), limit: 24 });
+            const results = filterValidAnime(data.data || []);
+            setSearchResults(results);
+        } catch (e) { console.error(e); }
+    };
 
     const fetchListData = async (pageNum, tab, reset = false) => {
         if (showingFavorites) return;
@@ -57,19 +75,13 @@ function Home() {
         else setLoadingMore(true);
 
         try {
-            let url = `${API_BASE}/top/anime?page=${pageNum}&limit=12`;
-            if (tab === 'latest') url = `${API_BASE}/top/anime?filter=airing&page=${pageNum}&limit=12`;
-            if (tab === 'popular') url = `${API_BASE}/top/anime?filter=bypopularity&page=${pageNum}&limit=12`;
+            let params = { page: pageNum, limit: 12 };
 
-            const res = await fetch(url);
-            const data = await res.json();
+            if (tab === 'latest') params.filter = 'airing';
+            if (tab === 'popular') params.filter = 'bypopularity';
 
-            let fetchedData = data.data || [];
-            fetchedData = fetchedData.filter(item =>
-                item.title &&
-                !item.title.toLowerCase().includes('not available') &&
-                !item.images?.webp?.large_image_url?.includes('questionmark')
-            );
+            const data = await getTopAnime(params);
+            const fetchedData = filterValidAnime(data.data || []);
 
             if (reset) setMainList(fetchedData);
             else setMainList(prev => [...prev, ...fetchedData]);
@@ -100,7 +112,7 @@ function Home() {
         }
         setLoadingMain(true);
         try {
-            const results = await Promise.all(myList.map(id => fetch(`${API_BASE}/anime/${id}`).then(r => r.json())));
+            const results = await Promise.all(myList.map(id => getAnimeById(id)));
             setMainList(results.map(r => r.data));
         } catch (e) { console.error(e); } finally { setLoadingMain(false); }
     };
@@ -115,14 +127,8 @@ function Home() {
         if (searchQuery.trim()) {
             setIsSearching(true);
             try {
-                const res = await fetch(`${API_BASE}/anime?q=${encodeURIComponent(searchQuery)}&limit=24`);
-                const data = await res.json();
-                let results = data.data || [];
-                results = results.filter(item =>
-                    item.title &&
-                    !item.title.toLowerCase().includes('not available') &&
-                    !item.images?.webp?.large_image_url?.includes('questionmark')
-                );
+                const data = await searchAnime(searchQuery, { limit: 24 });
+                const results = filterValidAnime(data.data || []);
                 setSearchResults(results);
             } catch (e) { console.error(e); }
         } else { setIsSearching(false); }
@@ -136,6 +142,8 @@ function Home() {
                 inList={myList.includes(selectedAnimeId)}
                 onToggleList={() => toggleMyList(selectedAnimeId)}
             />
+
+            <DiscordPopup />
 
             <Navbar
                 navScrolled={navScrolled}
