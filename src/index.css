@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+:root {
+    --primary-brand: #0084ff;
+    --primary-brand-glow: rgba(0, 132, 255, 0.4);
+    --bg-deep: #0d0d0d;
+    --zinc-950: #09090b;
+    --zinc-900: #18181b;
+    --zinc-800: #27272a;
+    --font-helvetica: 'Helvetica', 'Arial', sans-serif;
+}
+
+body {
+    background-color: var(--bg-deep);
+    color: white;
+    font-family: var(--font-helvetica);
+    font-weight: 700;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
+}
+
+/* Utilities & Components */
+.anime-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .anime-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .anime-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .anime-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .anime-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}
+
+.skuy-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 11 / 16;
+    border-radius: 1rem;
+    overflow: hidden;
+    background-color: var(--zinc-900);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.skuy-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 25px -5px var(--primary-brand-glow);
+    z-index: 10;
+}
+
+.skuy-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.skuy-card:hover img {
+    transform: scale(1.1);
+}
+
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(0deg, black 0%, rgba(0, 0, 0, 0.8) 50%, transparent 100%);
+    padding: 1.25rem 1rem 1rem;
+    opacity: 0.9;
+    transition: opacity 0.3s;
+}
+
+.skuy-card:hover .card-overlay {
+    opacity: 1;
+}
+
+/* Buttons */
+.btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--primary-brand);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    transition: all 0.3s;
+    box-shadow: 0 4px 14px 0 rgba(0, 132, 255, 0.39);
+}
+
+.btn-primary:hover {
+    background-color: #3399ff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 132, 255, 0.45);
+}
+
+.btn-zinc {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(39, 39, 42, 0.8);
+    backdrop-filter: blur(12px);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    transition: all 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-zinc:hover {
+    background-color: rgb(63, 63, 70);
+    transform: translateY(-2px);
+}
+
+/* Tabs */
+.tab-active {
+    background-color: var(--primary-brand);
+    color: white;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    box-shadow: 0 10px 15px -3px rgba(0, 39, 153, 0.2);
+    transition: all 0.3s;
+}
+
+.tab-inactive {
+    color: #71717a;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.tab-inactive:hover {
+    color: white;
+}
+
+/* Hero */
+.hero-billboard {
+    position: relative;
+    height: 65vh;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 2rem;
+    background: var(--zinc-900);
+}
+
+@media (min-width: 768px) {
+    .hero-billboard {
+        height: 80vh;
+    }
+}
+
+.hero-gradient {
+    background: linear-gradient(0deg, var(--bg-deep) 0%, rgba(13, 13, 13, 0.6) 40%, transparent 100%);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Modal Animation */
+.animate-modal-enter {
+    animation: modalEnter 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
